@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    tool:showIn="navigation_header">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/iLibrary"
+            android:title="@string/library" />
+        <item
+            android:id="@+id/iPlaylist"
+            android:title="@string/playlist" />
+        <item
+            android:id="@+id/iEqualizer"
+            android:title="@string/equalizer" />
+        <item
+            android:id="@+id/iSettings"
+            android:title="@string/settings" />
+    </group>
+</menu>

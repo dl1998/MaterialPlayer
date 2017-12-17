@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">MaterialPlayer</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Material Player</string>
+    <string name="tracks">Tracks</string>
+    <string name="artists">Artists</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="library">Library</string>
+    <string name="playlist">Playlist</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="settings">Settings</string>
 </resources>
