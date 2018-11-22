@@ -1,32 +1,36 @@
 package com.android.materialplayer.models;
 
 /**
- * Created by dl1998 on 04.12.17.
+ * Created by dl1998 on 29.12.17.
  */
 
 public class Album {
 
-    private Long albumId;
+    private Long id;
     private String albumName;
-    private String artistName;
-    private String artPath;
+    private String albumCover;
+    private Integer songsCount;
 
     public Album() {
     }
 
-    public Album(Long albumId, String albumName, String artistName, String artPath) {
-        this.albumId = albumId;
+    public Album(Long id, String albumName, String albumCover, Integer songsCount) {
+        this.id = id;
         this.albumName = albumName;
-        this.artistName = artistName;
-        this.artPath = artPath;
+        this.albumCover = albumCover;
+        this.songsCount = songsCount;
     }
 
-    public Long getAlbumId() {
-        return albumId;
+    public Album(com.android.materialplayer.entity.Album album) {
+        this(album.getAlbumId(), album.getAlbumName(), album.getAlbumArtPath(), album.getSongCount());
     }
 
-    public void setAlbumId(Long albumId) {
-        this.albumId = albumId;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAlbumName() {
@@ -37,19 +41,19 @@ public class Album {
         this.albumName = albumName;
     }
 
-    public String getArtistName() {
-        return artistName;
+    public String getAlbumCover() {
+        return albumCover;
     }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
+    public void setAlbumCover(String albumCover) {
+        this.albumCover = albumCover;
     }
 
-    public String getArtPath() {
-        return artPath;
+    public Integer getSongsCount() {
+        return songsCount;
     }
 
-    public void setArtPath(String artPath) {
-        this.artPath = artPath;
+    public void setSongsCount(Integer songsCount) {
+        this.songsCount = songsCount;
     }
 }

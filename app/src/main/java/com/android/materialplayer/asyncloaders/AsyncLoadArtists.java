@@ -4,12 +4,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 
 import com.android.materialplayer.AsyncTaskEnded;
-import com.android.materialplayer.DBHelper;
 import com.android.materialplayer.Settings;
 import com.android.materialplayer.dao.ArtistDAO;
 import com.android.materialplayer.dao.impl.ArtistDAOImpl;
 import com.android.materialplayer.dataloaders.LoadArtists;
 import com.android.materialplayer.entity.Artist;
+import com.android.materialplayer.provider.DBHelper;
 
 import java.util.ArrayList;
 

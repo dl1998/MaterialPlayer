@@ -12,17 +12,19 @@ public class Song {
     private String songName;
     private Integer duration;
     private Integer trackNumber;
+    private Integer year;
 
     public Song() {
     }
 
-    public Song(Long songId, Long albumId, Long artistId, String songName, Integer duration, Integer trackNumber) {
+    public Song(Long songId, Long albumId, Long artistId, String songName, Integer duration, Integer trackNumber, Integer year) {
         this.songId = songId;
         this.albumId = albumId;
         this.artistId = artistId;
         this.songName = songName;
         this.duration = duration;
         this.trackNumber = trackNumber;
+        this.year = year;
     }
 
     public Long getSongId() {
@@ -71,5 +73,13 @@ public class Song {
 
     public void setTrackNumber(Integer trackNumber) {
         this.trackNumber = trackNumber;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 }

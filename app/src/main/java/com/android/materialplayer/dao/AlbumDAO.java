@@ -24,4 +24,6 @@ public interface AlbumDAO {
 
     List<Album> getAll();
 
+    List<Album> getAllByArtistId(Long id);
+
 }

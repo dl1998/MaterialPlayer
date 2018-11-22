@@ -1,4 +1,4 @@
-package com.android.materialplayer;
+package com.android.materialplayer.provider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,8 +13,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "material_player_db";
     public static final Integer DB_VERSION = 1;
 
+    private Context context;
+
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -40,10 +43,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "album_art_path text," +
                 "album_year integer," +
                 "song_count integer)");
+
+        RecentlyPlayed.getInstance().onCreate(db);
+        SongPlayCount.getInstance().onCreate(db);
+        SearchHistory.getInstance().onCreate(db);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
 }

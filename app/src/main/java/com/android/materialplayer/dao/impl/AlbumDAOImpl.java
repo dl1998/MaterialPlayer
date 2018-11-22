@@ -102,4 +102,9 @@ public class AlbumDAOImpl extends MainDAOImpl<Album> implements AlbumDAO {
     public List<Album> getAll() {
         return super.getAll();
     }
+
+    @Override
+    public List<Album> getAllByArtistId(Long id) {
+        return super.get("artist_id = ?", new String[]{String.valueOf(id)}, null);
+    }
 }

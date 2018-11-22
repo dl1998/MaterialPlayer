@@ -30,20 +30,21 @@ abstract class MainDAOImpl<T> implements MainDAO<T> {
 
     abstract SQLiteStatement bindUpdate(SQLiteStatement statement, T object);
 
-    List<T> get(String selection, String[] selectionArgs) {
+    List<T> get(String selection, String[] selectionArgs, String orderBy) {
         List<T> objectsList = new LinkedList<>();
 
         Cursor cursor;
 
         db.beginTransaction();
         try {
-            cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null);
+            cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, orderBy);
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     objectsList.add(getByCursor(cursor));
                 } while (cursor.moveToNext());
             }
+            db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
@@ -100,12 +101,22 @@ abstract class MainDAOImpl<T> implements MainDAO<T> {
 
     @Override
     public T findById(String selection, Long id) {
-        List<T> list = get(selection, new String[]{String.valueOf(id)});
-        return list == null ? null : list.get(0);
+        List<T> list = get(selection, new String[]{String.valueOf(id)}, null);
+        return list == null || list.size() == 0 ? null : list.get(0);
     }
 
     @Override
     public List<T> getAll() {
-        return get(null, null);
+        return get(null, null, null);
+    }
+
+    @Override
+    public List<T> getAllBy(String selection, String[] selectionArgs) {
+        return get(selection, selectionArgs, null);
+    }
+
+    @Override
+    public List<T> getAllInOrder(String orderBy) {
+        return get(null, null, orderBy);
     }
 }

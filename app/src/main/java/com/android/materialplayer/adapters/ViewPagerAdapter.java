@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.materialplayer.fragments.AbstractTabFragment;
@@ -45,6 +46,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private void initTabsMap() {
         tabs = new SparseArray<>();
+        Log.d("Info", "Create New Instance View Pager");
         tabs.put(0, FragmentTracks.newInstance(context));
         tabs.put(1, FragmentAlbums.newInstance(context));
         tabs.put(2, FragmentArtists.newInstance(context));

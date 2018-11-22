@@ -33,9 +33,10 @@ public class LoadSongs {
                 MediaStore.Audio.Media.ARTIST_ID,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.TRACK
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.YEAR
         };
-        Cursor cursor = musicResolver.query(uri, projection, "duration > 20000", null, null);
+        Cursor cursor = musicResolver.query(uri, projection, MediaStore.Audio.Media.IS_MUSIC + " != 0", null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
 
@@ -46,8 +47,9 @@ public class LoadSongs {
                 String songName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 Integer duration = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 Integer trackNumber = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                Integer year = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR));
 
-                songs.add(new Song(songId, albumId, artistId, songName, duration, trackNumber));
+                songs.add(new Song(songId, albumId, artistId, songName, duration, trackNumber, year));
             } while (cursor.moveToNext());
         }
 

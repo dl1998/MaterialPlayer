@@ -10,21 +10,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.materialplayer.R;
-import com.android.materialplayer.models.Song;
+import com.android.materialplayer.models.ExtendedSong;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by dl1998 on 05.12.17.
  */
 
-public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.ViewHolder, Song> {
+public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.ViewHolder, ExtendedSong> {
 
     private Context context;
-    private ArrayList<Song> songs;
+    private List<ExtendedSong> songs;
+    private ItemClickListener listener = new ItemClickListener() {
+        @Override
+        public void onClick(View view, int position, boolean isLongClick) {
 
-    public TracksAdapter(Context context, ArrayList<Song> songs) {
+        }
+    };
+
+    public TracksAdapter(Context context, List<ExtendedSong> songs) {
         super(songs);
         this.context = context;
         this.songs = songs;
@@ -39,15 +47,13 @@ public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.Vie
 
     @Override
     public void onBindViewHolder(TracksAdapter.ViewHolder holder, int position) {
-        Song song = songs.get(position);
+
+        holder.setItemClickListener(listener);
+
+        ExtendedSong song = songs.get(position);
 
         holder.tvTitle.setText(song.getSongName());
         holder.tvArtist.setText(song.getArtistName());
-        //holder.ivCover.setImageDrawable(song.getAlbumArt());
-        //holder.ivCover.setImageDrawable(Drawable.createFromPath(new LoadAlbums(context.getContentResolver()).getAlbumArt(song.getAlbumId())));
-        //holder.ivCover.setImageResource(R.drawable.cover_not_available);
-
-        //Picasso.with(context).load("file://" + song.getAlbumArt()).placeholder(R.drawable.cover_not_available).into(holder.ivCover);
         new ArtLoad(holder).execute(song);
     }
 
@@ -56,20 +62,34 @@ public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.Vie
         return songs.size();
     }
 
-    public void add(Song song) {
+    public void setOnItemClickListener(ItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void add(ExtendedSong song) {
         songs.add(song);
     }
 
-    public void update(int position, Song song) {
+    public void update(int position, ExtendedSong song) {
         songs.set(position, song);
     }
 
-    public void setAdapter(ArrayList<Song> songs) {
+    public void setAdapter(List<ExtendedSong> songs) {
         this.songs = songs;
         notifyDataSetChanged();
     }
 
-    private class ArtLoad extends AsyncTask<Song, String, Void> {
+    public void sort(Comparator<ExtendedSong> comparator) {
+        Collections.sort(this.songs, comparator);
+        notifyDataSetChanged();
+    }
+
+    public void reversed() {
+        Collections.reverse(songs);
+        notifyDataSetChanged();
+    }
+
+    private class ArtLoad extends AsyncTask<ExtendedSong, String, Void> {
 
         private TracksAdapter.ViewHolder holder;
 
@@ -78,7 +98,7 @@ public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.Vie
         }
 
         @Override
-        protected Void doInBackground(Song... params) {
+        protected Void doInBackground(ExtendedSong... params) {
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.append("file://");
             strBuilder.append(params[0].getArtPath());
@@ -88,15 +108,21 @@ public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.Vie
 
         @Override
         protected void onProgressUpdate(String... values) {
-            Picasso.with(context).load(values[0]).placeholder(R.drawable.cover_not_available).into(holder.ivCover);
+            Picasso.get()
+                    .load(values[0])
+                    .fit()
+                    .placeholder(R.drawable.headphone)
+                    .into(holder.ivCover);
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         ImageView ivCover;
         TextView tvTitle;
         TextView tvArtist;
         View footer;
+
+        private ItemClickListener listener;
 
         ViewHolder(View view) {
             super(view);
@@ -104,6 +130,24 @@ public class TracksAdapter extends AbstractRecyclerViewAdapter<TracksAdapter.Vie
             tvTitle = view.findViewById(R.id.tvTracksName);
             tvArtist = view.findViewById(R.id.tvTracksArtist);
             footer = view.findViewById(R.id.footerSongs);
+
+            view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
+        }
+
+        public void setItemClickListener(ItemClickListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onClick(View view) {
+            listener.onClick(view, getAdapterPosition(), false);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            listener.onClick(view, getAdapterPosition(), true);
+            return true;
         }
     }
 }

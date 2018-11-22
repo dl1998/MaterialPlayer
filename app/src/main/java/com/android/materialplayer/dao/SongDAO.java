@@ -1,5 +1,6 @@
 package com.android.materialplayer.dao;
 
+import com.android.materialplayer.Settings;
 import com.android.materialplayer.entity.Song;
 
 import java.util.List;
@@ -23,5 +24,11 @@ public interface SongDAO {
     Song findById(Long id);
 
     List<Song> getAll();
+
+    List<Song> getAllByAlbum(Long id);
+
+    List<Song> getAllByArtist(Long id);
+
+    List<Song> getAllInOrder(Settings.SongOrder order, boolean reversed);
 
 }

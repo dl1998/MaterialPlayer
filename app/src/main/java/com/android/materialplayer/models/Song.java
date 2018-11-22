@@ -1,24 +1,35 @@
 package com.android.materialplayer.models;
 
 /**
- * Created by dl1998 on 03.12.17.
+ * Created by dl1998 on 02.01.18.
  */
 
 public class Song {
 
     private Long songId;
     private String songName;
-    private String artistName;
-    private String artPath;
+    private Integer duration;
+    private Integer trackNumber;
+
+    public static Song getFromSong(com.android.materialplayer.entity.Song song) {
+        Song temp = new Song();
+
+        temp.songId = song.getSongId();
+        temp.songName = song.getSongName();
+        temp.duration = song.getDuration();
+        temp.trackNumber = song.getTrackNumber();
+
+        return temp;
+    }
 
     public Song() {
     }
 
-    public Song(Long songId, String songName, String artistName, String artPath) {
+    public Song(Long songId, String songName, Integer duration, Integer trackNumber) {
         this.songId = songId;
         this.songName = songName;
-        this.artistName = artistName;
-        this.artPath = artPath;
+        this.duration = duration;
+        this.trackNumber = trackNumber;
     }
 
     public Long getSongId() {
@@ -37,19 +48,19 @@ public class Song {
         this.songName = songName;
     }
 
-    public String getArtistName() {
-        return artistName;
+    public Integer getDuration() {
+        return duration;
     }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 
-    public String getArtPath() {
-        return this.artPath;
+    public Integer getTrackNumber() {
+        return trackNumber;
     }
 
-    public void setArtPath(String artPath) {
-        this.artPath = artPath;
+    public void setTrackNumber(Integer trackNumber) {
+        this.trackNumber = trackNumber;
     }
 }

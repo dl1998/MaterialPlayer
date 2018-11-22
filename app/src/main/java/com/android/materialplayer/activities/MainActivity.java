@@ -1,17 +1,25 @@
 package com.android.materialplayer.activities;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,22 +27,29 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.materialplayer.AsyncTaskEnded;
 import com.android.materialplayer.R;
 import com.android.materialplayer.Settings;
-import com.android.materialplayer.adapters.ViewPagerAdapter;
 import com.android.materialplayer.asyncloaders.AsyncLoadAlbums;
 import com.android.materialplayer.asyncloaders.AsyncLoadArtists;
 import com.android.materialplayer.asyncloaders.AsyncLoadSongs;
+import com.android.materialplayer.bitmap_converter.BlurBuilder;
+import com.android.materialplayer.fragments.FragmentMain;
 import com.android.materialplayer.listeners.AsyncEndListener;
+import com.android.materialplayer.models.ExtendedSong;
+import com.android.materialplayer.services.MusicService;
 
-public class MainActivity extends AppCompatActivity implements AsyncEndListener {
+import java.util.Collections;
 
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private Toolbar toolbar;
+public class MainActivity extends AppCompatActivity implements AsyncEndListener, View.OnClickListener {
+
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
@@ -44,33 +59,130 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
 
     private Integer asyncsEnd;
 
+    private ConstraintLayout peekLayout;
+    private BottomSheetBehavior bottomSheetBehavior;
+
+    private Intent playIntent;
+    private MusicService musicService;
+    private boolean musicBound;
+
+    private ImageView ivSmallCover;
+    private TextView tvSongNameSmall;
+    private TextView tvArtistNameSmall;
+    private TextView tvSongName;
+    private TextView tvArtistName;
+    private ImageView ivCover;
+    private ImageButton btnPlayPause;
+    private ImageButton ibNavPlayPause;
+    private ImageButton ibPrevious;
+    private ImageButton ibNext;
+    private SeekBar seekBar;
+    private ProgressBar progressBar;
+
+    private CoordinatorLayout switchableLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        ConstraintLayout bottomSheetLayout = findViewById(R.id.bottomSheet);
+        peekLayout = findViewById(R.id.peekLayout);
+
+        ivSmallCover = findViewById(R.id.ivNavCoverSmall);
+        tvSongNameSmall = findViewById(R.id.tvSongNameSmall);
+        tvArtistNameSmall = findViewById(R.id.tvArtistNameSmall);
+        tvSongName = findViewById(R.id.tvSongName);
+        tvArtistName = findViewById(R.id.tvArtistName);
+        ivCover = findViewById(R.id.ivNavCover);
+        btnPlayPause = findViewById(R.id.ibNavButton);
+        ibNavPlayPause = findViewById(R.id.ibNavPlayPause);
+        ibNext = findViewById(R.id.ibNavNext);
+        ibPrevious = findViewById(R.id.ibNavPrevious);
+        seekBar = findViewById(R.id.sbNav);
+        progressBar = findViewById(R.id.pbNavTime);
+
+        switchableLayout = findViewById(R.id.switchableLayout);
+
+        btnPlayPause.setOnClickListener(this);
+        ibNavPlayPause.setOnClickListener(this);
+        ibPrevious.setOnClickListener(this);
+        ibNext.setOnClickListener(this);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
 
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 
-        viewPager = findViewById(R.id.vpCategories);
-        tabLayout = findViewById(R.id.tabLayout);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
         asyncsEnd = 0;
 
+        ivCover.setTag(R.drawable.cover_not_available);
+
         Settings.preferences = getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Bitmap blurBitmap = BlurBuilder.blur(this, BitmapFactory.decodeResource(getResources(), (Integer) ivCover.getTag()));
+        ivCover.setImageBitmap(blurBitmap);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PlayedTrackActivity.class);
-                startActivity(intent);
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+                boolean state;
+
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    state = false;
+                } else {
+                    state = true;
+                }
+
+                switchableLayout.setClickable(state);
+                switchableLayout.setActivated(state);
+                switchableLayout.setEnabled(state);
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                peekLayout.animate().alpha(1 - slideOffset).setDuration(0).start();
             }
         });
+
+        startPlayIntent();
+
+        handleSeekBar();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        deinitSeekBar();
+        /*stopService(playIntent);
+        unbindService(Settings.serviceConnection);
+
+        musicService = null;
+        Settings.musicService = null;
+        Settings.serviceConnection = musicConnection;
+        Settings.playIntent = playIntent;
+        super.onDestroy();*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            fragmentManager.popBackStack();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -102,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
                         editor.putBoolean(Settings.SP_FIRST_RUN, false);
                         editor.apply();
                     } else {
-                        initTabs();
+                        initFragmentWithViewPager();
                     }
 
                 } else {
@@ -112,19 +224,22 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
         }
     }
 
-    private void initTabs() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
-
-        tabLayout.setupWithViewPager(viewPager);
+    public void initFragmentWithViewPager() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.switchableLayout, new FragmentMain());
+        fragmentTransaction.addToBackStack("fragment_main");
+        fragmentTransaction.commit();
     }
 
-    private void initNavigationView() {
+    public void initActionBarDrawerToggle(Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+    }
 
+    private void initNavigationView() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -136,6 +251,9 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
                     case R.id.iPlaylist:
                         showPlaylist();
                         break;
+                    case R.id.iNowPlaying:
+                        showNowPlaying();
+                        break;
                 }
 
                 return true;
@@ -143,16 +261,22 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
         });
     }
 
+    private void showNowPlaying() {
+        Intent intent = new Intent(MainActivity.this, PlayedTrackActivity.class);
+        startActivity(intent);
+    }
+
     private void showLibrary() {
-        viewPager.setCurrentItem(0);
+        //viewPager.setCurrentItem(0);
     }
 
     private void showPlaylist() {
-        viewPager.setCurrentItem(1);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -162,12 +286,38 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
             return true;
+        }
+        if (id == R.id.action_shuffle) {
+            Settings.player.stop();
+            Collections.shuffle(Settings.songs);
+            Settings.song = Settings.songs.get(0);
+            setSong(Settings.song);
+            play();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private ServiceConnection musicConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
+            musicService = binder.getService();
+            musicService.setActivity(MainActivity.this);
+            Settings.musicService = musicService;
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 
     @Override
     public void onAsyncEnd(AsyncTaskEnded task) {
@@ -176,11 +326,119 @@ public class MainActivity extends AppCompatActivity implements AsyncEndListener 
         if (task == taskArtists) asyncsEnd++;
 
         if (isAllAsyncsEnd()) {
-            initTabs();
+            initFragmentWithViewPager();
         }
     }
 
     private boolean isAllAsyncsEnd() {
         return asyncsEnd >= 3;
+    }
+
+    private void togglePlay() {
+        if (Settings.player != null) {
+            if (Settings.player.isPlaying()) {
+                pause();
+            } else {
+                play();
+            }
+        }
+        Settings.musicService.playPause();
+    }
+
+    private void startPlayIntent() {
+        if (playIntent == null) {
+            playIntent = new Intent(this, MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+            Settings.serviceConnection = musicConnection;
+            Settings.playIntent = playIntent;
+        }
+    }
+
+    private void handleSeekBar() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (Settings.player != null && fromUser) {
+                    Settings.player.seekTo(progress * 1000);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    private Handler handler;
+    private Runnable runnable;
+
+    public void initSeekBar() {
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setMax(Settings.song.getDuration() / 1000);
+                progressBar.setMax(Settings.song.getDuration() / 1000);
+                int mpCurrentPosition = Settings.player.getCurrentPosition() / 1000;
+                seekBar.setProgress(mpCurrentPosition);
+                progressBar.setProgress(mpCurrentPosition);
+                handler.postDelayed(this, 1000);
+            }
+        };
+        runOnUiThread(runnable);
+    }
+
+    public void deinitSeekBar() {
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+    }
+
+    private void play() {
+        btnPlayPause.setImageResource(R.drawable.ic_simple_pause);
+        ibNavPlayPause.setImageResource(R.drawable.ic_simple_pause);
+    }
+
+    private void pause() {
+        btnPlayPause.setImageResource(R.drawable.ic_simple_play);
+        ibNavPlayPause.setImageResource(R.drawable.ic_simple_play);
+    }
+
+    public void setSong(ExtendedSong song) {
+        Bitmap cov = BitmapFactory.decodeFile(song.getArtPath());
+        if (cov == null) cov = BitmapFactory.decodeResource(getResources(), R.drawable.headphone);
+        ivCover.setImageBitmap(BlurBuilder.blur(this, cov));
+        ivSmallCover.setImageBitmap(cov);
+        tvArtistNameSmall.setText(song.getArtistName());
+        tvArtistName.setText(song.getArtistName());
+        tvSongNameSmall.setText(song.getSongName());
+        tvSongName.setText(song.getSongName());
+        btnPlayPause.setImageResource(R.drawable.ic_simple_pause);
+        ibNavPlayPause.setImageResource(R.drawable.ic_simple_pause);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ibNavButton:
+            case R.id.ibNavPlayPause:
+                togglePlay();
+                break;
+            case R.id.ibNavPrevious:
+                Settings.musicService.previousSong();
+                setSong(Settings.song);
+                break;
+            case R.id.ibNavNext:
+                Settings.musicService.nextSong();
+                setSong(Settings.song);
+                break;
+        }
     }
 }

@@ -16,4 +16,8 @@ public interface MainDAO<T> {
 
     List<T> getAll();
 
+    List<T> getAllBy(String selection, String[] selectionArgs);
+
+    List<T> getAllInOrder(String orderBy);
+
 }

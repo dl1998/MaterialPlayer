@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.android.materialplayer.Settings;
 import com.android.materialplayer.dao.SongDAO;
 import com.android.materialplayer.entity.Song;
 
@@ -105,5 +106,20 @@ public class SongDAOImpl extends MainDAOImpl<Song> implements SongDAO {
     @Override
     public List<Song> getAll() {
         return super.getAll();
+    }
+
+    @Override
+    public List<Song> getAllByAlbum(Long id) {
+        return super.getAllBy("album_id = ?", new String[]{String.valueOf(id)});
+    }
+
+    @Override
+    public List<Song> getAllByArtist(Long id) {
+        return super.get("artist_id = ?", new String[]{String.valueOf(id)}, null);
+    }
+
+    @Override
+    public List<Song> getAllInOrder(Settings.SongOrder order, boolean reversed) {
+        return null;
     }
 }
