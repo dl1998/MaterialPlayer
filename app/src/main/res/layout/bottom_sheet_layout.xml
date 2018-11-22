@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:id="@+id/bottomSheet"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="250dp"
+                                             android:orientation="vertical"
+                                             app:behavior_peekHeight="@dimen/bottomSheetHeight"
+                                             app:layout_behavior="@string/bottom_sheet_behavior"
+                                             tools:showIn="@layout/activity_main">
+
+    <ImageView
+        android:id="@+id/ivNavCover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:foreground="#44CCCCCC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/peekLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomSheetHeight"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivNavCoverSmall"
+            android:layout_width="@dimen/bottomSheetHeight"
+            android:layout_height="@dimen/bottomSheetHeight"
+            android:background="@drawable/headphone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/pbNavTime"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivNavCoverSmall"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintTop_toBottomOf="@id/pbNavTime"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivNavCoverSmall"
+            app:layout_constraintEnd_toStartOf="@id/ibNavButton">
+
+            <TextView
+                android:id="@+id/tvSongNameSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/colorTitle"
+                android:textSize="15sp"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tvArtistNameSmall"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:textColor="@color/colorSubTitle"
+                android:textSize="12sp"
+                android:gravity="top"
+                android:maxLines="1"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/ibNavButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_simple_play"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintTop_toBottomOf="@id/pbNavTime"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/peekLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvSongName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvArtistName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/tvSongName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <SeekBar
+            android:id="@+id/sbNav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            app:layout_constraintTop_toBottomOf="@id/tvArtistName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/ibNavPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/ic_skip_previous"
+            app:layout_constraintEnd_toStartOf="@id/ibNavPlayPause"
+            app:layout_constraintTop_toBottomOf="@id/sbNav"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/ibNavPlayPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_simple_play"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sbNav"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/ibNavNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:background="@drawable/ic_skip_next"
+            app:layout_constraintStart_toEndOf="@id/ibNavPlayPause"
+            app:layout_constraintTop_toBottomOf="@id/sbNav"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

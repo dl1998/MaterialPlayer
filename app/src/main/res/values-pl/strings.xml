@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracks">Utwory</string>
+    <string name="artists">Artyści</string>
+    <string name="open">Otwórz</string>
+    <string name="close">Zamknij</string>
+    <string name="library">Biblioteka</string>
+    <string name="playlist">Playlist</string>
+    <string name="equalizer">Stabilizator</string>
+    <string name="settings">Ustawienia</string>
+    <string name="shuffle_all">Przetasować Wszystko</string>
+    <string name="sort_order_az">A-Z</string>
+    <string name="sort_order_za">Z-A</string>
+    <string name="sort_order_album">Album</string>
+    <string name="sort_order_artist">Artysta</string>
+    <string name="sort_order_title">Nazwą</string>
+    <string name="sort_order_year">Rok</string>
+    <string name="sort_order_duration">Trwanie</string>
+    <string name="reversed">Odwrotny</string>
+    <string name="sort_by">Sortuj Według</string>
+    <string name="sort_order_no_of_tracks">Liczba Utworów</string>
+    <string name="sort_order_no_of_albums">Liczba Albumów</string>
+    <string name="sort_by_album">Album</string>
+    <string name="song">piosenka</string>
+    <string name="songs">piosenki</string>
+    <string name="search">Szukaj</string>
+    <string name="albums">Albumy</string>
+    <string name="playlists">Playlisty</string>
+    <string name="folders">Foldery</string>
+    <string name="playing_queue">Kolejka Odtwarzania</string>
+    <string name="now_playing">Teraz Gra</string>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sort_by"
+        android:title="@string/sort_by"
+        android:icon="@drawable/ic_sort"
+        android:orderInCategory="2"
+        app:showAsAction="always">
+        <menu>
+            <group
+                android:id="@+id/groupAlbum"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/sort_by_album_in_album"
+                    android:title="@string/sort_by_album"
+                    android:checked="true"/>
+                <item
+                    android:id="@+id/sort_by_no_tracks"
+                    android:title="@string/sort_order_no_of_tracks"/>
+            </group>
+            <item
+                android:id="@+id/action_reversed"
+                android:title="@string/reversed"
+                android:checkable="true"/>
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlNavigationTrack"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:background="#77555555"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_played_track">
+
+    <TextView
+        android:id="@+id/tvTrackTitle"
+        style="@style/tvPlayTrack"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Happy New Year" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clNavigationButtons"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/tvTrackTitle"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnShuffle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_shuffle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnPrevious"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_skip_previous"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnPlayPause"
+            app:layout_constraintStart_toEndOf="@id/btnShuffle"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnPlayPause"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_pause"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnNext"
+            app:layout_constraintStart_toEndOf="@id/btnPrevious"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_skip_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnRepeat"
+            app:layout_constraintStart_toEndOf="@id/btnPlayPause"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnRepeat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="?selectableItemBackground"
+            android:src="@drawable/ic_repeat"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/llTimeline"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/clNavigationButtons">
+
+        <TextView
+            style="@style/tvPlayTrack"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="0:00" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            style="@style/tvPlayTrack"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="5:00" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/llTimeline"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/tvPlayTrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Super Trouper"
+            android:textSize="20sp" />
+
+        <TextView
+            style="@style/tvPlayTrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Abba" />
+    </LinearLayout>
+</LinearLayout>

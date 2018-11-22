@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracks">Треки</string>
+    <string name="artists">Виконавці</string>
+    <string name="open">Відчинити</string>
+    <string name="close">Замкнути</string>
+    <string name="library">Бібліотека</string>
+    <string name="playlist">Плейлист</string>
+    <string name="equalizer">Еквалайзер</string>
+    <string name="settings">Налаштування</string>
+    <string name="shuffle_all">Перетасувати Все</string>
+    <string name="sort_order_az">А-Я</string>
+    <string name="sort_order_za">Я-А</string>
+    <string name="sort_order_album">Альбом</string>
+    <string name="sort_order_artist">Виконавець</string>
+    <string name="sort_order_title">Назва</string>
+    <string name="sort_order_year">Рік</string>
+    <string name="sort_order_duration">Тривалість</string>
+    <string name="reversed">Зворотний</string>
+    <string name="sort_by">Сортувати За</string>
+    <string name="sort_order_no_of_tracks">Кількість Композицій</string>
+    <string name="sort_order_no_of_albums">Кількість Альбомів</string>
+    <string name="sort_by_album">Альбом</string>
+    <string name="song">пісня</string>
+    <string name="songs">пісні</string>
+    <string name="search">Пошук</string>
+    <string name="albums">Альбоми</string>
+    <string name="playlists">Списки Відтворення</string>
+    <string name="folders">Папки</string>
+    <string name="playing_queue">Черга Відтворення</string>
+    <string name="now_playing">Зараз Грає</string>
+</resources>
